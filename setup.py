@@ -23,7 +23,7 @@ class BuildExtension(build_ext):
     """
 
     # Name of the python package (the name used to import the module)
-    PACKAGE_NAME = "gym_ignition_models"
+    PACKAGE_NAME = "gym_gz_models"
 
     # Shared mesh directory
     SHARED_MESH_DIR = "meshes"
