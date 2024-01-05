@@ -39,11 +39,11 @@ jobs:
           echo "Distributions:"
           ls -alh dist/
 
-      # - name: Rename wheel
-      #   run: |
-      #     sudo apt update
-      #     sudo apt install rename
-      #     find . -type f -name "*.whl" -exec rename -v "s/cp(\d)(\d)-cp(\d)(\d)-linux_x86_64/py3-none-any/g" {} +
+      - name: Rename wheel
+        run: |
+          sudo apt update
+          sudo apt install rename
+          find . -type f -name "*.whl" -exec rename.ul linux manylinux2014 {} +
 
       - name: Publish to PyPI
         if: |
