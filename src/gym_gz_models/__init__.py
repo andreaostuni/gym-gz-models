@@ -107,7 +107,6 @@ def setup_environment() -> None:
 
     # Setup the environment to find the mesh files
     for model in models_with_mesh:
-
         model_path = Path(get_models_path()) / model
 
         if not model_path.exists():
@@ -120,7 +119,6 @@ def setup_environment() -> None:
 
 
 class ResourceType(enum.Enum):
-
     SDF_FILE = enum.auto()
     SDF_PATH = enum.auto()
     SDF_STRING = enum.auto()
@@ -156,7 +154,6 @@ def get_model_resource(
         raise RuntimeError(f"Model '{robot_name} has no urdf nor sdf resource")
 
     if stored_model.endswith(".urdf"):
-
         if resource_type is ResourceType.URDF_PATH:
             return stored_model
 
@@ -207,7 +204,6 @@ def get_model_resource(
         raise ValueError(resource_type)
 
     if stored_model.endswith(".sdf"):
-
         if resource_type is ResourceType.SDF_PATH:
             return stored_model
 

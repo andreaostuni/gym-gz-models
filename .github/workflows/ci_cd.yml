@@ -11,11 +11,11 @@ jobs:
 
   build-n-publish:
     name: Python Packaging
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         python-version:
-          - 3.8
+          - '3.10'
 
     steps:
 
@@ -23,7 +23,7 @@ jobs:
       - run: git fetch --prune --unshallow
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -46,10 +46,11 @@ jobs:
 
       - name: Publish to PyPI
         if: |
-          github.repository == 'robotology/gym-ignition-models' &&
+          github.repository == 'andreaostuni/gym-gz-models' &&
           ((github.event_name == 'release' && github.event.action == 'published') ||
            (github.event_name == 'push' && github.ref == 'refs/heads/master'))
-        uses: pypa/gh-action-pypi-publish@master
+        uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          password: ${{ secrets.pypi_password }}
-          skip_existing: true
+          repository-url: https://test.pypi.org/legacy/
+          password: ${{ secrets.PYPI_TOKEN }}
+          skip-existing: true
