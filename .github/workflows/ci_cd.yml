@@ -43,7 +43,7 @@ jobs:
         run: |
           sudo apt update
           sudo apt install rename
-          find . -type f -name "*.whl" -exec rename.ul linux manylinux2014 {} +
+          find . -type f -name "*.whl" -exec rename linux manylinux2014 {} +
 
       - name: Publish to PyPI
         if: |
