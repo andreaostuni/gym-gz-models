@@ -9,8 +9,8 @@ on:
 
 jobs:
 
-  build_sdist:
-    name: Build source distribution 
+  build-n-publish:
+    name: Python Packaging
     runs-on: ubuntu-22.04
     permissions:
       id-token: write
@@ -30,77 +30,21 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Install basic tools
-        run: pip install setuptools_scm build
+        run: pip install build
 
-      - name: Build sdist
-        run: python -m build --sdist
-
-      - name: Install sdist
-        run: pip -v install dist/*.tar.gz
-
-      - name: Test import
-        run: python -c 'import gym_gz_models; print(gym_gz_models.get_model_file("ground_plane"))'
-
-      - uses: actions/upload-artifact@v3
-        with:
-          name: dist
-          path: dist/*.tar.gz
-
-  build_wheels:
-    name: Build wheels
-    runs-on: ubuntu-22.04
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version:
-          - '3.10'
-    
-    steps:
-
-      - uses: actions/checkout@master
-      - run: git fetch --prune --unshallow
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Install cibuildwheel
-        run: pip install cibuildwheel
-
-      - name: Build wheels
+      - name: Create distributions
         run: |
-          python -m cibuildwheel --output-dir wheelhouse
+          python -m build --sdist --wheel --outdir dist/
           echo ""
           echo "Distributions:"
-          ls -alh wheelhouse/
-        env:
-          CIBW_BUILD_VERBOSITY: 1
-          CIBW_BUILD: cp310-*manylinux*_x86_64
-          CIBW_TEST_COMMAND: "python -c 'import gym_gz_models; print(gym_gz_models.get_model_file(\"ground_plane\"))'"
+          ls -alh dist/
 
-      - uses: actions/upload-artifact@v3
-        with:
-          name: dist
-          path: ./wheelhouse/*.whl
-    
-  upload_pypi:
-    needs:
-      - build_sdist
-      - build_wheels
-    runs-on: ubuntu-22.04
-    permissions:
-      id-token: write
+      # - name: Rename wheel
+      #   run: |
+      #     sudo apt update
+      #     sudo apt install rename
+      #     find . -type f -name "*.whl" -exec rename -v "s/cp(\d)(\d)-cp(\d)(\d)-linux_x86_64/py3-none-any/g" {} +
 
-    steps:
-      - uses: actions/download-artifact@v3
-        with:
-          name: dist
-          path: dist
-
-      - name: Inspect dist folder
-        run: ls -lah dist/
-        
       - name: Publish to PyPI
         if: |
           github.repository == 'andreaostuni/gym-gz-models' &&
